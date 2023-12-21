@@ -16,7 +16,7 @@ const router = createBrowserRouter([
     element: <Dashboard />
   },
   {
-    path: '/pedido',
+    path: '/pedidos',
     element: <OrderForm />
   }
 ])
