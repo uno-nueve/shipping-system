@@ -1,6 +1,6 @@
 import { Header } from "../components/Header"
 
-export const Dashboard = () => {
+export const DashboardView = () => {
   return (
     <>
         <Header />

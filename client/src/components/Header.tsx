@@ -14,7 +14,11 @@ export const Header = () => {
         </li>
 
         <li>
-          <NavLink to={'/pedido'}>Nuevo Pedido</NavLink>
+          <NavLink to={'/pedidos'}>Pedidos</NavLink>
+        </li>
+
+        <li>
+          <NavLink to={'/archivo-pedidos'}>Archivo</NavLink>
         </li>
       </ul>
     </div>
