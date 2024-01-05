@@ -6,11 +6,15 @@ export type TOrder = {
     date: string;
     packaging: string;
     price: number;
-    customerId: number;
-    customerName: string;
-    customerAddress: string;
+    customer: TCustomer;
     issuerName: string;
     _id: string;
+};
+
+export type TCustomer = {
+    name: string;
+    fId: number;
+    address: string;
 };
 
 export const OrderList = () => {
@@ -26,6 +30,7 @@ export const OrderList = () => {
         async function fetchOrders() {
             const response = await fetch(`http://localhost:5000/pedidos`);
             const newOrders = await response.json();
+            console.log(newOrders);
             setOrders(newOrders);
         }
         fetchOrders();
@@ -61,11 +66,11 @@ export const OrderList = () => {
                         <hr />
                         <span>{order.date}</span>
                         <hr />
-                        <span>{order.customerName}</span>
+                        <span>{order.customer.name}</span>
                         <hr />
-                        <span>{order.customerAddress}</span>
+                        <span>{order.customer.address}</span>
                         <hr />
-                        <span>CUIT/CUIL: {order.customerId}</span>
+                        <span>CUIT/CUIL: {order.customer.fId}</span>
                         <hr />
                         <span>EMISOR: {order.issuerName}</span>
                     </div>

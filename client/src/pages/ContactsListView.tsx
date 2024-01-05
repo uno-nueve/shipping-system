@@ -1,7 +1,9 @@
-
+import { ContactsList } from '../components/ContactsList';
 
 export const ContactsListView = () => {
-  return (
-    <div>ContactsListView</div>
-  )
-}
+    return (
+        <div>
+            <ContactsList />
+        </div>
+    );
+};
