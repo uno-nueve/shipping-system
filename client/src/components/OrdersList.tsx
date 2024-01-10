@@ -40,59 +40,73 @@ export const OrderList = () => {
 
     return (
         <div>
-            {orders.map((order) => (
-                <li
-                    key={order._id}
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-around',
-                        background: 'white',
-                        width: '300px',
-                        color: 'black',
-                        borderRadius: '20px',
-                        padding: '10px',
-                        marginBottom: '15px',
-                        position: 'relative',
-                    }}
-                >
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span>
-                            {order.quantity} Rosas en {order.packaging}
-                        </span>
-                        <hr />
-                        <span>${order.price}</span>
-                        <hr />
-                        <span>{order.date}</span>
-                        <hr />
-                        <span>{order.customer.name}</span>
-                        <hr />
-                        <span>{order.customer.address}</span>
-                        <hr />
-                        <span>CUIT/CUIL: {order.customer.fId}</span>
-                        <hr />
-                        <span>EMISOR: {order.issuerName}</span>
-                    </div>
-                    <button
-                        onClick={() => handleDeleteOrder(order._id)}
-                        style={{
-                            width: '40px',
-                            height: '40px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            position: 'absolute',
-                            top: '10px',
-                            right: '10px',
-                            borderRadius: '15px',
-                        }}
-                    >
-                        X
-                    </button>
-                </li>
-            ))}
-            <Link to={'/nuevo-pedido'}>Nuevo Pedido</Link>
+            {orders.length === 0 ? (
+                <h1>No hay pedidos</h1>
+            ) : (
+                <>
+                    {orders.map((order) => (
+                        <li
+                            key={order._id}
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-around',
+                                background: 'white',
+                                width: '300px',
+                                color: 'black',
+                                borderRadius: '20px',
+                                padding: '10px',
+                                marginBottom: '15px',
+                                position: 'relative',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                }}
+                            >
+                                <span>
+                                    {order.quantity} Rosas en {order.packaging}
+                                </span>
+                                <hr />
+                                <span>${order.price}</span>
+                                <hr />
+                                <span>{order.date}</span>
+                                <hr />
+                                <span>{order.customer.name}</span>
+                                <hr />
+                                <span>{order.customer.address}</span>
+                                <hr />
+                                <span>CUIT/CUIL: {order.customer.fId}</span>
+                                <hr />
+                                <span>EMISOR: {order.issuerName}</span>
+                            </div>
+                            <button
+                                onClick={() => handleDeleteOrder(order._id)}
+                                style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    position: 'absolute',
+                                    top: '10px',
+                                    right: '10px',
+                                    borderRadius: '15px',
+                                }}
+                            >
+                                X
+                            </button>
+                        </li>
+                    ))}
+                </>
+            )}
+            <Link to={'/dashboard'}>Volver</Link>
+            <Link to={'/nuevo-pedido'}>
+                {orders.length !== 0 ? 'Nuevo Pedido' : 'Haz un pedido'}
+            </Link>
         </div>
     );
 };

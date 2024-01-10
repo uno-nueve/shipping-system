@@ -1,0 +1,9 @@
+.form-section {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid white;
+    padding: 12px;
+}

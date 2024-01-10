@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export type TContact = {
     name: string;
     fId: number;
     address: string;
+    orders: [];
     _id: string;
 };
 
@@ -27,22 +29,29 @@ export const ContactsList = () => {
 
     return (
         <div>
-            <ul>
-                {contacts.map((contact) => (
-                    <li key={contact._id}>
-                        <span>{contact.name}</span>
-                        <hr />
-                        <span>CUIT/CUIL: {contact.fId}</span>
-                        <hr />
-                        <span>Dirección: {contact.address}</span>
-                        <button
-                            onClick={() => hanldeDeleteContact(contact._id)}
-                        >
-                            x
-                        </button>
-                    </li>
-                ))}
-            </ul>
+            {contacts.length === 0 ? (
+                <h1>No tienes contactos</h1>
+            ) : (
+                <ul>
+                    {contacts.map((contact) => (
+                        <li key={contact._id}>
+                            <span>{contact.name}</span>
+                            <hr />
+                            <span>CUIT/CUIL: {contact.fId}</span>
+                            <hr />
+                            <span>Dirección: {contact.address}</span>
+                            <hr />
+                            <span>Ordenes: {contact.orders.length}</span>
+                            <button
+                                onClick={() => hanldeDeleteContact(contact._id)}
+                            >
+                                x
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            <Link to={'/dashboard'}>Volver</Link>
         </div>
     );
 };

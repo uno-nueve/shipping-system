@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 config();
 
 import express, { Request, Response, response } from 'express';
-import mongoose from 'mongoose';
+import mongoose, { Error } from 'mongoose';
 import cors, { CorsOptions } from 'cors';
 import Order from './models/Order';
 import Contact from './models/Contact';
@@ -27,27 +27,42 @@ app.get('/dashboard', (req: Request, res: Response) => {
 });
 
 app.post('/pedidos', async (req: Request, res: Response) => {
-    const newContact = new Contact({
-        name: req.body.customerName,
-        fId: req.body.customerId,
-        address: req.body.customerAddress,
-    });
-    const createdContact = await newContact.save();
+    try {
+        let existingContact = await Contact.findOne({
+            fId: parseInt(req.body.customerId),
+        });
 
-    const newOrder = new Order({
-        quantity: req.body.quantity,
-        date: req.body.date,
-        packaging: req.body.packaging,
-        price: req.body.price,
-        customer: createdContact._id,
-        issuerName: req.body.issuerName,
-        licenseNumber: req.body.licenseNumber,
-        driverId: req.body.driverId,
-        driverName: req.body.driverName,
-    });
-    const createdOrder = await newOrder.save();
+        if (!existingContact) {
+            const newContact = new Contact({
+                name: req.body.customerName,
+                fId: req.body.customerId,
+                address: req.body.customerAddress,
+                orders: [],
+            });
+            existingContact = await newContact.save();
+        }
 
-    res.json({ order: createdOrder, contact: createdContact });
+        const newOrder = new Order({
+            quantity: req.body.quantity,
+            date: req.body.date,
+            packaging: req.body.packaging,
+            price: req.body.price,
+            customer: existingContact._id,
+            issuerName: req.body.issuerName,
+            licenseNumber: req.body.licenseNumber,
+            driverId: req.body.driverId,
+            driverName: req.body.driverName,
+        });
+        const createdOrder = await newOrder.save();
+
+        existingContact.orders.push(createdOrder._id);
+        await existingContact.save();
+
+        res.json({ order: createdOrder, contact: existingContact });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.get('/pedidos', async (req: Request, res: Response) => {
@@ -60,9 +75,22 @@ app.get('/pedidos', async (req: Request, res: Response) => {
 });
 
 app.delete('/pedidos/:orderId', async (req: Request, res: Response) => {
-    const orderId = req.params.orderId;
-    const order = await Order.findByIdAndDelete(orderId);
-    res.json(order);
+    try {
+        const orderId = req.params.orderId;
+        const order = await Order.findById(orderId);
+        const contactId = order?.customer;
+        const deletedOrder = await Order.findByIdAndDelete(orderId);
+
+        if (contactId) {
+            await Contact.findByIdAndUpdate(contactId, {
+                $pull: { orders: orderId },
+            });
+        }
+        res.json(deletedOrder);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.get('/contactos', async (req: Request, res: Response) => {
@@ -70,6 +98,7 @@ app.get('/contactos', async (req: Request, res: Response) => {
     res.json(contacts);
 });
 
+//! This delete function causes a bug due to alterating data on the orders
 app.delete('/contactos/:contactId', async (req: Request, res: Response) => {
     const contactId = req.params.contactId;
     const contacts = await Contact.findByIdAndDelete(contactId);
