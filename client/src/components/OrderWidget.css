@@ -1,0 +1,12 @@
+.widget-wrapper {
+    background: #fafafa;
+    width: 400px;
+}
+
+.widget-wrapper > table {
+    width: 100%;
+}
+
+.widget-wrapper > table > thead {
+    background: #dadada;
+}

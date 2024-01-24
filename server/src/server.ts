@@ -1,8 +1,8 @@
 import { config } from 'dotenv';
 config();
 
-import express, { Request, Response, response } from 'express';
-import mongoose, { Error } from 'mongoose';
+import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import cors, { CorsOptions } from 'cors';
 import Order from './models/Order';
 import Contact from './models/Contact';
@@ -74,6 +74,20 @@ app.get('/pedidos', async (req: Request, res: Response) => {
     }
 });
 
+app.get('/pedidos/:orderId', async (req: Request, res: Response) => {
+    const { orderId } = req.params;
+    try {
+        const order = await Order.findById(orderId).populate('customer');
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+        res.json(order);
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 app.delete('/pedidos/:orderId', async (req: Request, res: Response) => {
     try {
         const orderId = req.params.orderId;
@@ -96,6 +110,12 @@ app.delete('/pedidos/:orderId', async (req: Request, res: Response) => {
 app.get('/contactos', async (req: Request, res: Response) => {
     const contacts = await Contact.find();
     res.json(contacts);
+});
+
+app.get('/contactos/:contactId', async (req: Request, res: Response) => {
+    const { contactId } = req.params;
+    const contact = await Contact.findById(contactId);
+    res.json(contact);
 });
 
 //! This delete function causes a bug due to alterating data on the orders

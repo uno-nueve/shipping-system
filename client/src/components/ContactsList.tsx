@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { TOrder } from './OrdersList';
+import { OrderWidget } from './OrderWidget';
 
 export type TContact = {
     name: string;
@@ -11,6 +13,7 @@ export type TContact = {
 
 export const ContactsList = () => {
     const [contacts, setContacts] = useState<TContact[]>([]);
+    const [orders, setOrders] = useState<TOrder[]>([]);
 
     useEffect(() => {
         async function fetchContacts() {
@@ -18,7 +21,13 @@ export const ContactsList = () => {
             const newContacts = await response.json();
             setContacts(newContacts);
         }
+        async function fetchOrders() {
+            const response = await fetch('http://localhost:5000/pedidos');
+            const newOrders = await response.json();
+            setOrders(newOrders);
+        }
         fetchContacts();
+        fetchOrders();
     }, []);
 
     function hanldeDeleteContact(contactId: string) {
@@ -35,13 +44,54 @@ export const ContactsList = () => {
                 <ul>
                     {contacts.map((contact) => (
                         <li key={contact._id}>
-                            <span>{contact.name}</span>
+                            <Link to={`/contactos/${contact._id}`}>
+                                <span>{contact.name}</span>
+                            </Link>
                             <hr />
                             <span>CUIT/CUIL: {contact.fId}</span>
                             <hr />
                             <span>Dirección: {contact.address}</span>
                             <hr />
-                            <span>Ordenes: {contact.orders.length}</span>
+                            <details>
+                                <summary>
+                                    {contact.orders.length > 1 ? (
+                                        <>{contact.orders.length} Ordenes:</>
+                                    ) : (
+                                        <>{contact.orders.length} Orden:</>
+                                    )}
+                                </summary>
+                                <ol>
+                                    {orders.map((order) => {
+                                        if (
+                                            contact.orders.some(
+                                                (orderId) =>
+                                                    order._id === orderId,
+                                            )
+                                        ) {
+                                            return (
+                                                <li key={order._id}>
+                                                    <OrderWidget
+                                                        quantity={
+                                                            order.quantity
+                                                        }
+                                                        date={order.date}
+                                                        packaging={
+                                                            order.packaging
+                                                        }
+                                                        price={order.price}
+                                                        issuer={
+                                                            order.issuerName
+                                                        }
+                                                    />
+                                                    <Link
+                                                        to={`/pedidos/${order._id}`}
+                                                    ></Link>
+                                                </li>
+                                            );
+                                        }
+                                    })}
+                                </ol>
+                            </details>
                             <button
                                 onClick={() => hanldeDeleteContact(contact._id)}
                             >

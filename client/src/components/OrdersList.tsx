@@ -61,28 +61,31 @@ export const OrderList = () => {
                                 position: 'relative',
                             }}
                         >
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                }}
-                            >
-                                <span>
-                                    {order.quantity} Rosas en {order.packaging}
-                                </span>
-                                <hr />
-                                <span>${order.price}</span>
-                                <hr />
-                                <span>{order.date}</span>
-                                <hr />
-                                <span>{order.customer.name}</span>
-                                <hr />
-                                <span>{order.customer.address}</span>
-                                <hr />
-                                <span>CUIT/CUIL: {order.customer.fId}</span>
-                                <hr />
-                                <span>EMISOR: {order.issuerName}</span>
-                            </div>
+                            <Link to={`/pedidos/${order._id}`}>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                    }}
+                                >
+                                    <span>
+                                        {order.quantity} Rosas en{' '}
+                                        {order.packaging}
+                                    </span>
+                                    <hr />
+                                    <span>${order.price}</span>
+                                    <hr />
+                                    <span>{order.date}</span>
+                                    <hr />
+                                    <span>{order.customer.name}</span>
+                                    <hr />
+                                    <span>{order.customer.address}</span>
+                                    <hr />
+                                    <span>CUIT/CUIL: {order.customer.fId}</span>
+                                    <hr />
+                                    <span>EMISOR: {order.issuerName}</span>
+                                </div>
+                            </Link>
                             <button
                                 onClick={() => handleDeleteOrder(order._id)}
                                 style={{

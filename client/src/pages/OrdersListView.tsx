@@ -1,10 +1,11 @@
-import { OrderList } from "../components/OrdersList"
-
+import { Header } from '../components/Header';
+import { OrderList } from '../components/OrdersList';
 
 export const OrdersListView = () => {
-  return (
-    <div>
-      <OrderList />
-    </div>
-  )
-}
+    return (
+        <div>
+            <Header />
+            <OrderList />
+        </div>
+    );
+};
